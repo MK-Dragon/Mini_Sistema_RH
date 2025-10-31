@@ -11,6 +11,51 @@
 #include "Utils\CSV_Manager.h"
 
 
+HResources hr;
+
+int get_emp_id(){
+    // Get employee ID
+    int imp_id;
+    while (true) {
+        if (!(std::cin >> imp_id)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Invalid input. Please enter a number between 0 and " << hr.next_id -1 << "\n";
+            continue;
+        }
+        if (imp_id >= 0 && imp_id < hr.next_id) break;
+        std::cout << "Invalid input. Please enter a number between 0 and " << hr.next_id -1 << "\n";
+    }
+    return imp_id;
+}
+
+Date get_weed_day(){
+    while (true)
+    {
+        std::string new_day_string;
+        std::getline(std::cin >> std::ws, new_day_string);
+        std::cin.clear();
+
+        Date new_day = parse_date(new_day_string);
+
+        // If date is Zero / Error
+        if (new_day.day == 0 || new_day.month == 0 || new_day.year == 0)
+        {
+            std::cout << "Invalid day. Please enter a number equal or bigger then 1.\n";
+            showPressAnyKey();
+            continue;
+        }
+        // check weekend
+        int day_week = diaSemana(new_day.day, new_day.month, new_day.year);
+        if (day_week == 0 || day_week == 6)
+        {
+            std::cout << "Invalid day. Please enter a Week Day.\n";
+            showPressAnyKey();
+            continue;
+        }
+        break;
+    }
+}
 
 
 
@@ -19,16 +64,33 @@ int main()
 {
     int menu = 0; // Main menu
     std::string FILE_NAME = "db.csv";
-    HResources hr;
 
     // Load CSV
     Load_from_CSV(FILE_NAME);
+    
+    // testing
+    hr.add_employee("Marco");
+    hr.add_employee("Zé Manel");
+    hr.add_employee("Ana Pimpão");
+    for (int i = 0; i < 3; i++)
+    {
+        Employee e = hr.get_employee(i);
+    }
+    
+;
     // Check CSV
 
 
     while (menu != -1)
     {
+        Employee emp;
         std::string new_emp_name;
+        int imp_id;
+
+        int num_days;
+        Date new_day;
+        std::string new_day_string;
+        
 
         // Show Menu
         printMainMenu();
@@ -68,9 +130,71 @@ int main()
                 menu = 0;
                 break;
             
-            case 4:
-                std::getline(std::cin >> std::ws, new_emp_name);
-                std::cin.clear();
+            case 3: // Mark Vacation
+                printChooseEmployee("Mark Vacation", hr.get_list_employees());
+                
+                // Get employee ID
+                imp_id = get_emp_id();
+                emp = hr.get_employee(imp_id);
+
+                // get number of days to add
+                while (true) {
+                    if (!(std::cin >> num_days)) {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+                        std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                        continue;
+                    }
+                    if (num_days >= 0) break;
+                    std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                }
+                // get day
+                for (int i = 0; i < num_days; i++)
+                {
+                    std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    printChooseDay(title);
+                    
+                    hr.add_vacation(emp, get_weed_day());
+                }
+                menu = 0;
+                break;
+
+            case 7: // Employee's Monthly Calendar
+                printChooseEmployee("Employee's Monthly Calendar", hr.get_list_employees());
+                // Get employee ID
+                imp_id = get_emp_id();
+                emp = hr.get_employee(imp_id);
+
+                // get Month & year
+                while (true)
+                {
+                    std::getline(std::cin >> std::ws, new_day_string);
+                    std::cin.clear();
+
+                    new_day = parse_month_year(new_day_string);
+
+                    // If date is Zero / Error
+                    if (new_day.month == 0 || new_day.year == 0)
+                    {
+                        std::cout << "Invalid Date. Please enter a Mounth or Year.\n";
+                        showPressAnyKey();
+                        continue;
+                    }
+                    break;
+                }
+                {
+                    std::vector vaction_days = hr.get_vacation_days(emp, new_day.day, new_day.year);
+                    std::string title = emp.name + " - " + nomeMes(new_day.month) + " " + std::to_string(new_day.year);
+                    printCalendarMarked(
+                        title,
+                        diasNoMes(new_day.month, new_day.year),
+                        diaSemana(1, new_day.month, new_day.year),
+                        hr.get_vacation_days(emp, new_day.month, new_day.year),
+                        'F'
+                    );
+                }
+
+                menu = 0;
                 break;
 
             default:

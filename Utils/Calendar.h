@@ -76,8 +76,13 @@ Date parse_date(const std::string& date_str) {
     }
     
     // 3. check mounth size && mounth not Zero!
+    if (result.month > 12)
+    {
+        result = {0, 0, 0};
+        return result;
+    }
     int num_days = diasNoMes(result.month, result.year);
-    if (!result.day <= num_days || result.day == 0){
+    if (result.day > num_days || result.day == 0){
         std::cout << "Invalid Date! Please Enter Valid Date" << std::endl;
         result = {0, 0, 0};
         return result;
@@ -85,3 +90,61 @@ Date parse_date(const std::string& date_str) {
     return result;
 }
 
+Date parse_month_year(const std::string& date_str) {
+    // Initialize with day = 0 (as requested), month = 0, year = 0
+    Date result = {0, 0, 0};
+    
+    // 1. Create a stringstream from the input string
+    std::stringstream ss(date_str);
+    std::string segment;
+    char delimiter = '-';
+    int part_index = 0; // 0 for month, 1 for year
+    int segment_count = 0;
+
+    // 2. Read segments separated by the delimiter
+    while (std::getline(ss, segment, delimiter)) {
+        segment_count++; // Count how many parts we successfully read
+
+        // Convert the string segment to an integer
+        try {
+            // Trim leading/trailing whitespace if necessary, though std::stoi usually handles it.
+            int value = std::stoi(segment);
+            
+            // 3. Populate the struct fields based on the index
+            if (part_index == 0) {
+                // The first segment is the MONTH
+                result.month = value;
+            } else if (part_index == 1) {
+                // The second segment is the YEAR
+                result.year = value;
+            }
+            part_index++;
+
+        } catch (const std::exception& e) {
+            std::cout << "Invalid Format! Month or year must be a valid number." << std::endl;
+            // On error, reset the result and return immediately.
+            return {0, 0, 0}; 
+        }
+    }
+    
+    // 4. Validate that exactly two parts (Month and Year) were found
+    if (segment_count != 2) {
+        std::cout << "Invalid Format! Please use the M-YYYY format (e.g., 5-2025)." << std::endl;
+        return {0, 0, 0};
+    }
+
+    // 5. check mounth size && mounth not Zero!
+    if (result.month > 12)
+    {
+        result = {0, 0, 0};
+        return result;
+    }
+    int num_days = diasNoMes(result.month, result.year);
+    if (result.day > num_days){
+        std::cout << "Invalid Date! Please Enter Valid Date" << std::endl;
+        result = {0, 0, 0};
+        return result;
+    }
+
+    return result;
+}
