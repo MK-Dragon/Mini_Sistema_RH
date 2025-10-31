@@ -17,9 +17,9 @@
 
 int main()
 {
-    // Loop Values
     int menu = 0; // Main menu
     std::string FILE_NAME = "db.csv";
+    HResources hr;
 
     // Load CSV
     Load_from_CSV(FILE_NAME);
@@ -28,6 +28,8 @@ int main()
 
     while (menu != -1)
     {
+        std::string new_emp_name;
+
         // Show Menu
         printMainMenu();
 
@@ -51,11 +53,24 @@ int main()
                 break;
 
             case 1: // List Employees
+                printListOfEmployees(hr.get_list_employees());
+
+                showPressAnyKey();
                 menu = 0;
                 break;
             
             case 2: // Add Employees
+                printAddEmployee_name();
+                std::getline(std::cin >> std::ws, new_emp_name);
+                std::cin.clear();
+                
+                hr.add_employee(new_emp_name);
                 menu = 0;
+                break;
+            
+            case 4:
+                std::getline(std::cin >> std::ws, new_emp_name);
+                std::cin.clear();
                 break;
 
             default:

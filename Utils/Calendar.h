@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+
+#include "../Model/Dates.h"
 
 
 
@@ -36,3 +39,49 @@ std::string nomeMes(int mes){
                                  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
     return meses[mes-1];
 }
+
+
+
+
+Date parse_date(const std::string& date_str) {
+    Date result = {0, 0, 0}; // Initialize to zero
+    
+    // 1. Create a stringstream from the input string
+    std::stringstream ss(date_str);
+    std::string segment;
+    char delimiter = '-';
+    int part_index = 0;
+
+    // 2. Read segments separated by the delimiter
+    while (std::getline(ss, segment, delimiter)) {
+        // Convert the string segment to an integer
+        try {
+            int value = std::stoi(segment);
+            
+            // 3. Populate the struct fields based on the index
+            if (part_index == 0) {
+                result.day = value;
+            } else if (part_index == 1) {
+                result.month = value;
+            } else if (part_index == 2) {
+                result.year = value;
+            }
+            part_index++;
+
+        } catch (const std::exception& e) {
+            std::cout << "Invalid Format! Please use on this formats: eg 01-02-2025 or 1-2-2025!" << std::endl;
+            result = {0, 0, 0};
+            return result;
+        }
+    }
+    
+    // 3. check mounth size && mounth not Zero!
+    int num_days = diasNoMes(result.month, result.year);
+    if (!result.day <= num_days || result.day == 0){
+        std::cout << "Invalid Date! Please Enter Valid Date" << std::endl;
+        result = {0, 0, 0};
+        return result;
+    }
+    return result;
+}
+
