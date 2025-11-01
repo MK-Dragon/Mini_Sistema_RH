@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+#include <locale>
+
 #include "Controller/HResources.h"
 #include "Controller/HResources.cpp"
 #include "Model/Employee.h"
@@ -71,31 +73,56 @@ Date get_weed_day(){
 
 int main()
 {
+    std::vector<Date> empty_vacations;
+std::vector<Date> empty_absences;
+printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, 'A');
+
+    // FIX: Use the standard C locale name for UTF-8
+    try {
+        std::locale::global(std::locale("C.UTF-8"));
+        std::cout.imbue(std::locale("C.UTF-8"));
+    } catch (const std::runtime_error& e) {
+        // Fallback in case "C.UTF-8" also fails (e.g., on some older Windows systems)
+        std::cerr << "Warning: Failed to set C.UTF-8 locale. Using default C locale." << std::endl;
+        std::locale::global(std::locale("C"));
+        std::cout.imbue(std::locale("C"));
+    }
+    // This ensures your C++ program *sends* UTF-8 bytes to the console.
+    try {
+        std::locale::global(std::locale("C.UTF-8")); 
+        std::cout.imbue(std::locale("C.UTF-8"));
+    } catch (const std::runtime_error& e) {
+        // Fallback or warning if C.UTF-8 isn't available
+        // It's crucial this part doesn't crash the program.
+        std::cerr << "Warning: UTF-8 locale not available. Display may be corrupted." << std::endl;
+    }
+
+
     int menu = 0; // Main menu
     std::string FILE_NAME = "db.csv";
 
     // Load CSV
-    Load_from_CSV(FILE_NAME);
-    
-    // testing
-    hr.add_employee("Marco");
-    hr.add_employee("Zé Manel");
-    hr.add_employee("Ana Pimpão");
-    for (int i = 0; i < 3; i++)
+    if (Check_File_Exists(FILE_NAME) == 1)
     {
-        Employee e = hr.get_employee(i);
-        Employee* emp = &hr.get_employee(i);
+        // READ FILE
+        std:: cout << "main -> Reading File: " << FILE_NAME << "\n";
+        std::vector<Employee> loaded_emp = read_csv(FILE_NAME);
+        std:: cout << "main -> Num Emps: " << loaded_emp.size() << "\n";
 
-        hr.add_vacation(*emp, parse_date("31-10-2025"));
-        hr.add_vacation(*emp, parse_date("6-10-2025"));
-        hr.add_vacation(*emp, parse_date("29-10-2025"));
-        
-        hr.add_absence(*emp, parse_date("07-10-2025"));
-        hr.add_absence(*emp, parse_date("8-10-2025"));
-        hr.add_absence(*emp, parse_date("9-10-2025"));
+        for (const auto& emp : loaded_emp){
+            hr.add_loaded_employee(emp.name, emp.vacations, emp.absences);
+        }
     }
-    
-    // Check CSV
+    else // Not File found -> Load Demo
+    {
+        std::vector<Date> vac = {{31,10,2025}, {30,10,2025}};
+        std::vector<Date> abse = {{7,10,2025}, {8,10,2025}};
+
+        hr.add_loaded_employee("Zé Manel", vac, abse);
+        hr.add_loaded_employee("Ana Pimbão", vac, abse);
+        hr.add_loaded_employee("Lili Canelas", vac, abse);
+        hr.add_loaded_employee("Fernado Fisgado", vac, abse);
+    }
 
 
     while (menu != -1)
@@ -244,15 +271,29 @@ int main()
                     break;
                 }
                 {
+                    std:: cout << "main -> before print Cale: " << emp->absences.size() << "\n";
+
+                    std::vector<Date> vacations;
+                    std::vector<Date> absences;
+
+                    // What EVER the F#$% the bug was! -.-' This Fixes it!
+                    if (emp->vacations.size() != 0)
+                    {
+                        vacations = hr.get_vacation_days(*emp, new_day.month, new_day.year);
+                    }
+                    if (emp->absences.size() != 0)
+                    {
+                        absences = hr.get_absence_days(*emp, new_day.month, new_day.year);
+                    }
+                    
                     std::string title = emp->name + " - " + nomeMes(new_day.month) + " " + std::to_string(new_day.year);
                     printCalendarMarked(
                         title,
                         diasNoMes(new_day.month, new_day.year),
                         diaSemana(1, new_day.month, new_day.year),
-                        hr.get_vacation_days(*emp, new_day.month, new_day.year),
+                        vacations,
                         'V',
-                        //{{27, 10, 2025}, {9, 10, 2025}},
-                        hr.get_absence_days(*emp, new_day.month, new_day.year),
+                        absences,
                         'A'
                     );
                 }
@@ -266,6 +307,9 @@ int main()
     }
 
     // Save to CSV and Exit
-    Save_to_CSV(FILE_NAME);
+    if (!write_csv(FILE_NAME, hr.get_list_employees()))
+    {
+        showError("Error Saving CSV", "We Could not Save the Data...");
+    }
     return 0;
 }

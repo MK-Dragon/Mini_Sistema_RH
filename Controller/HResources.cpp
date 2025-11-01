@@ -29,6 +29,18 @@ void HResources::add_employee(std:: string name)
     next_id++;
 }
 
+void HResources::add_loaded_employee(std:: string name, std::vector<Date> vacations, std::vector<Date> absences)
+{
+    Employee new_emp {
+        next_id,
+        name,
+        vacations,
+        absences
+    };
+    list_of_employees.push_back(new_emp);
+    next_id++;
+}
+
 
 Employee& HResources::get_employee(int emp_id)
 {

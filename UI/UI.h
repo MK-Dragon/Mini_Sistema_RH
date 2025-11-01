@@ -71,7 +71,7 @@ void printAddEmployee_phone(){
 // List Employees
 void printEmployees(std::vector <Employee> emp_list){
     for (int i = 0; i < emp_list.size(); i++) {
-        std::cout << i+1 << ") Name: " << emp_list[i].name
+        std::cout << i << ") Name: " << emp_list[i].name
                   //<< "\tYear: " << emp_list[i].year
                   << "\n";
     }
@@ -116,7 +116,7 @@ void printChooseDay(std::string title){
 
 // Draw Calender
 
-std::optional<char> get_day_marker(
+/*std::optional<char> get_day_marker(
     const std::vector<Date>& vacations, 
     const std::vector<Date>& absences, 
     int day_to_check
@@ -141,7 +141,14 @@ std::optional<char> get_day_marker(
     
     // Day is not marked in either list
     return std::nullopt;
-}
+}*/
+
+
+
+
+
+
+
 
 // --- Main Calendar Function (Modified) ---
 void printCalendarMarked(
@@ -173,12 +180,16 @@ void printCalendarMarked(
     // 4. Print the Days
     int current_day_of_week = start_day_of_week;
 
-    for (int day = 1; day <= days_in_month; ++day) {
-        
+   for (int day = 1; day <= days_in_month; ++day){
         // Check for a marker in either list
         char marker = ' '; // Default to space
         
         // Check Vacation list
+        //if (vacations.size() == 0)
+        //{
+            // just look cute ^_^  and Please don't Crash
+        //}
+        //else 
         if (std::find_if(vacations.begin(), vacations.end(), 
             [day](const Date& d) { return d.day == day; }) != vacations.end()) 
         {
@@ -223,4 +234,11 @@ void printCalendarMarked(
 void showPressAnyKey(){
     std::cout << "\nPress Any Key to Continue" << std::endl;
     char key = _getch();
+}
+
+void showError(std::string errorTitle, std::string errorMessage)
+{
+    std::cout << "🚨 " << errorTitle << " 🚨" << std::endl;
+    std::cout << errorMessage << std::endl;
+    showPressAnyKey();
 }

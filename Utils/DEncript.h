@@ -26,7 +26,7 @@ std::string desencriptar(const std::string &texto, int chave) {
     return encriptar(texto, 26 - (chave % 26)); // desloca no sentido inverso
 }
  
-int main() {
+/*int main() {
     std::string mensagem;
     int chave;
  
@@ -43,4 +43,4 @@ int main() {
     std::cout << "Mensagem decifrada: " << decifrada << "\n";
  
     return 0;
-}
+}*/

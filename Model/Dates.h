@@ -3,9 +3,9 @@
 #pragma once
 
 struct Date {
-    int day;
-    int month;
-    int year;
+    int day = 0;
+    int month = 0;
+    int year = 0;
 };
 
 inline bool operator==(const Date& lhs, const Date& rhs) {

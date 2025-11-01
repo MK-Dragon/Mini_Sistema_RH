@@ -151,3 +151,10 @@ Date parse_month_year(const std::string& date_str) {
 
     return result;
 }
+
+
+
+
+std::string parse_to_string(Date d){
+    return std::to_string(d.day) + "-" + std::to_string(d.month) + "-" + std::to_string(d.year);
+}

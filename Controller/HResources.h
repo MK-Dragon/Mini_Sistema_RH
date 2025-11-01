@@ -17,6 +17,7 @@ struct HResources
     // Add & List
     std::vector <Employee> get_list_employees();
     void add_employee(std:: string name);
+    void add_loaded_employee(std:: string name, std::vector<Date> vacations, std::vector<Date> absences);
 
     Employee& get_employee(int emp_id);
 
