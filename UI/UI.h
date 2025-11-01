@@ -16,7 +16,9 @@
 #include <cstdlib>
 void clearScreenANSI() {
     // \033[2J clears the screen, \033[1;1H moves the cursor to the top-left (row 1, column 1)
-    std::cout << "\033[2J\033[1;1H";
+    //std::cout << "\033[2J\033[1;1H";
+
+    std::cout << "\n\n\n" << std::endl;
 }
 
 
@@ -87,6 +89,14 @@ void printListOfEmployees(std::vector <Employee> emp_list){
 
 
 
+
+// ASK generic:
+void printEnterValue(std::string title, std::string ask){
+    clearScreenANSI();
+
+    std::cout << "* " << title << " *" << std::endl;
+    std::cout << "\t" << ask << ": "; // for user input
+}
 
 
 

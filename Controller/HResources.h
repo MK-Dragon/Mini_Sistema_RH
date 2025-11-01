@@ -18,10 +18,10 @@ struct HResources
     std::vector <Employee> get_list_employees();
     void add_employee(std:: string name);
 
-    Employee get_employee(int emp_id);
+    Employee& get_employee(int emp_id);
 
     // Vacation
-    void add_vacation(Employee emp, Date day);
-    std::vector<Date> get_vacation_days(Employee emp, int month, int year);
+    void add_vacation(Employee &emp, Date day);
+    std::vector<Date> get_vacation_days(Employee &emp, int month, int year);
 };
 

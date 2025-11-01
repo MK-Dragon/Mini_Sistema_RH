@@ -45,6 +45,8 @@ std::string nomeMes(int mes){
 
 Date parse_date(const std::string& date_str) {
     Date result = {0, 0, 0}; // Initialize to zero
+
+    std::cout << "\tDebug: parse string: " << date_str << "\n";
     
     // 1. Create a stringstream from the input string
     std::stringstream ss(date_str);
@@ -68,6 +70,9 @@ Date parse_date(const std::string& date_str) {
             }
             part_index++;
 
+            std::cout << "\tDebug: parse segment w: " << result.day << "-" << result.month << "-" << result.year << "\n";
+
+
         } catch (const std::exception& e) {
             std::cout << "Invalid Format! Please use on this formats: eg 01-02-2025 or 1-2-2025!" << std::endl;
             result = {0, 0, 0};
@@ -87,8 +92,11 @@ Date parse_date(const std::string& date_str) {
         result = {0, 0, 0};
         return result;
     }
+    std::cout << "\tDebug: parse @ return: " << result.day << "-" << result.month << "-" << result.year << "\n";
     return result;
 }
+
+
 
 Date parse_month_year(const std::string& date_str) {
     // Initialize with day = 0 (as requested), month = 0, year = 0
