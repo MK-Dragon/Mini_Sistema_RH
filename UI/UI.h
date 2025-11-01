@@ -12,13 +12,13 @@
 
 #include <iomanip>
 #include <algorithm> // Required for std::find_if
+#include <optional> // Requires C++17, but is the cleanest way to return a marker
 
 #include <cstdlib>
 void clearScreenANSI() {
     // \033[2J clears the screen, \033[1;1H moves the cursor to the top-left (row 1, column 1)
-    //std::cout << "\033[2J\033[1;1H";
-
-    std::cout << "\n\n\n" << std::endl;
+    std::cout << "\033[2J\033[1;1H";
+    //std::cout << "\n\n\n" << std::endl;
 }
 
 
@@ -119,8 +119,145 @@ void printChooseDay(std::string title){
 
 
 
-// Draw Calender!!!
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::optional<char> get_day_marker(
+    const std::vector<Date>& vacations, 
+    const std::vector<Date>& absences, 
+    int day_to_check
+) {
+    // Check for Vacation first
+    if (std::find_if(vacations.begin(), vacations.end(), 
+        [day_to_check](const Date& d) {
+            return d.day == day_to_check;
+        }) != vacations.end()) 
+    {
+        return 'V'; // Using 'V' as a default marker for Vacation
+    }
+    
+    // Check for Absence second
+    if (std::find_if(absences.begin(), absences.end(), 
+        [day_to_check](const Date& d) {
+            return d.day == day_to_check;
+        }) != absences.end()) 
+    {
+        return 'A'; // Using 'A' as a default marker for Absence
+    }
+    
+    // Day is not marked in either list
+    return std::nullopt;
+}
+
+// --- Main Calendar Function (Modified) ---
+void printCalendarMarked(
+    const std::string& month_name, 
+    int days_in_month, 
+    int start_day_of_week, // 0 = Domingo, 6 = Sábado
+    
+    // NEW PARAMETERS for two sets of dates and their markers
+    const std::vector<Date>& vacations, 
+    char vacation_marker,
+    const std::vector<Date>& absences, 
+    char absence_marker
+) {
+    // ... (Input validation omitted for brevity)
+
+    // 1. Print the Month Title
+    std::cout << "\n-----------------------------\n";
+    std::cout << std::setw(20) << std::right << month_name << "\n";
+    std::cout << "-----------------------------\n";
+
+    // 2. Print Weekday Headers
+    std::cout << "Sun Mon Tue Wed Thu Fri Sat\n";
+
+    // 3. Print the Empty Spacing
+    for (int i = 0; i < start_day_of_week; ++i) {
+        std::cout << "    "; 
+    }
+
+    // 4. Print the Days
+    int current_day_of_week = start_day_of_week;
+
+    for (int day = 1; day <= days_in_month; ++day) {
+        
+        // Check for a marker in either list
+        char marker = ' '; // Default to space
+        
+        // Check Vacation list
+        if (std::find_if(vacations.begin(), vacations.end(), 
+            [day](const Date& d) { return d.day == day; }) != vacations.end()) 
+        {
+            marker = vacation_marker;
+        } 
+        // Check Absence list (ONLY if not already a Vacation. If a day can be BOTH, 
+        // you need a more complex system, like a char for each, e.g., 'VA')
+        else if (std::find_if(absences.begin(), absences.end(), 
+            [day](const Date& d) { return d.day == day; }) != absences.end()) 
+        {
+            marker = absence_marker;
+        }
+
+        // Print the day number and marker
+        // Using setw(2) for the day, and then printing the marker and an alignment space
+        std::cout << std::setw(2) << day;
+        if (marker != ' ') {
+            std::cout << marker << " "; // Marker + 1 space
+        } else {
+            std::cout << "  "; // 2 spaces to maintain column width
+        }
+        
+        // Move to the next day of the week
+        current_day_of_week++;
+
+        // If we reach the end of the week (Saturday), start a new line
+        if (current_day_of_week % 7 == 0) {
+            std::cout << "\n";
+            current_day_of_week = 0; // Reset to Sunday (0)
+        }
+    }
+
+    // 5. Final Formatting
+    std::cout << "\n-----------------------------\n";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Draw Calender!!!
+/*
 // --- Helper Function ---
 bool is_date_marked(const std::vector<Date>& dates, int day_to_check) {
     // Use std::find_if to efficiently check if any Date in the vector 
@@ -182,7 +319,7 @@ void printCalendarMarked(
 
     // 5. Final Formatting
     std::cout << "\n-----------------------------\n";
-}
+}*/
 
 
 

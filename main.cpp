@@ -84,6 +84,15 @@ int main()
     for (int i = 0; i < 3; i++)
     {
         Employee e = hr.get_employee(i);
+        Employee* emp = &hr.get_employee(i);
+
+        hr.add_vacation(*emp, parse_date("31-10-2025"));
+        hr.add_vacation(*emp, parse_date("6-10-2025"));
+        hr.add_vacation(*emp, parse_date("29-10-2025"));
+        
+        hr.add_absence(*emp, parse_date("07-10-2025"));
+        hr.add_absence(*emp, parse_date("8-10-2025"));
+        hr.add_absence(*emp, parse_date("9-10-2025"));
     }
     
     // Check CSV
@@ -122,13 +131,15 @@ int main()
                 menu = -1;
                 break;
 
+
             case 1: // List Employees
                 printListOfEmployees(hr.get_list_employees());
 
                 showPressAnyKey();
                 menu = 0;
                 break;
-            
+           
+                
             case 2: // Add Employees
                 printAddEmployee_name();
                 std::getline(std::cin >> std::ws, new_emp_name);
@@ -138,6 +149,7 @@ int main()
                 menu = 0;
                 break;
             
+
             case 3: // Mark Vacation
                 printChooseEmployee("Mark Vacation", hr.get_list_employees());
                 
@@ -168,14 +180,43 @@ int main()
                 menu = 0;
                 break;
 
+
+            case 4: // REMOVE Vacation
+                printChooseEmployee("Remove Vacation", hr.get_list_employees());
+                
+                // Get employee ID
+                imp_id = get_emp_id();
+                emp = &hr.get_employee(imp_id);
+
+                // get number of days to add
+                printEnterValue("Remove Vacation", "Number os Days");
+                while (true) {
+                    if (!(std::cin >> num_days)) {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+                        std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                        continue;
+                    }
+                    if (num_days >= 0) break;
+                    std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                }
+                // get day
+                for (int i = 0; i < num_days; i++)
+                {
+                    std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    printChooseDay(title);
+                    
+                    hr.remove_vacation(*emp, get_weed_day());
+                }
+                menu = 0;
+                break;
+
+
             case 7: // Employee's Monthly Calendar
                 printChooseEmployee("Employee's Monthly Calendar", hr.get_list_employees());
                 // Get employee ID
                 imp_id = get_emp_id();
                 emp = &hr.get_employee(imp_id);
-
-                //std::cout << "Emp: " << emp->id << " " << emp->name << "\n";
-                //std::cout << "Emp Vacation size @ MAIN: " << emp->vacations.size() << "\n";
 
                 // get Month & year
                 printEnterValue("Employee's Monthly Calendar", "Month and Year");
@@ -197,25 +238,24 @@ int main()
                 }
                 {
                     std::string title = emp->name + " - " + nomeMes(new_day.month) + " " + std::to_string(new_day.year);
-                    printCalendarMarked(
+                    /*printCalendarMarked(
                         title,
                         diasNoMes(new_day.month, new_day.year),
                         diaSemana(1, new_day.month, new_day.year),
                         hr.get_vacation_days(*emp, new_day.month, new_day.year),
                         'V'
+                    );*/
+                    printCalendarMarked(
+                        title,
+                        diasNoMes(new_day.month, new_day.year),
+                        diaSemana(1, new_day.month, new_day.year),
+                        hr.get_vacation_days(*emp, new_day.month, new_day.year),
+                        'V',
+                        //{{27, 10, 2025}, {9, 10, 2025}},
+                        hr.get_absence_days(*emp, new_day.month, new_day.year),
+                        'A'
                     );
-                    
-                    /*std::vector<Date> vaction_days = hr.get_vacation_days(*emp, new_day.month, new_day.year);
-                    std::cout << "Debug vac list:" << "\n";
-                    for (int i = 0; i < vaction_days.size(); i++)
-                    {
-                        std::cout << "\t" << 
-                        std::to_string(vaction_days[i].day) << "/" <<
-                        std::to_string(vaction_days[i].month) << "/" <<
-                        std::to_string(vaction_days[i].year) << "/" << std::endl;
-                    }*/
                 }
-
                 showPressAnyKey();
                 menu = 0;
                 break;

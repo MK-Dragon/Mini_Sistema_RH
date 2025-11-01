@@ -22,6 +22,12 @@ struct HResources
 
     // Vacation
     void add_vacation(Employee &emp, Date day);
+    void remove_vacation(Employee &emp, Date day_to_remove);
     std::vector<Date> get_vacation_days(Employee &emp, int month, int year);
+
+    // Absences
+    void add_absence(Employee &emp, Date day);
+    void remove_absence(Employee &emp, Date day_to_remove);
+    std::vector<Date> get_absence_days(Employee &emp, int month, int year);
 };
 
