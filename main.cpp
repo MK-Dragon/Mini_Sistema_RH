@@ -212,6 +212,13 @@ int main()
                 break;
 
 
+            case 5:
+                break;
+
+            case 6:
+                break;
+
+
             case 7: // Employee's Monthly Calendar
                 printChooseEmployee("Employee's Monthly Calendar", hr.get_list_employees());
                 // Get employee ID
@@ -238,13 +245,6 @@ int main()
                 }
                 {
                     std::string title = emp->name + " - " + nomeMes(new_day.month) + " " + std::to_string(new_day.year);
-                    /*printCalendarMarked(
-                        title,
-                        diasNoMes(new_day.month, new_day.year),
-                        diaSemana(1, new_day.month, new_day.year),
-                        hr.get_vacation_days(*emp, new_day.month, new_day.year),
-                        'V'
-                    );*/
                     printCalendarMarked(
                         title,
                         diasNoMes(new_day.month, new_day.year),
