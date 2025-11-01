@@ -71,9 +71,6 @@ void HResources::remove_vacation(Employee &emp, Date day_to_remove)
     // 2. std::vector::erase uses the iterator range (from the result of std::remove 
     //    to the end) to physically delete the elements and resize the vector.
     emp.vacations.erase(it, emp.vacations.end());
-    
-    // You could add debugging output here if needed:
-    // std::cout << "\n\tDebug: Removed date from HR.\n";
 }
 
 // Vacation

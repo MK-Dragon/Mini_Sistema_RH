@@ -76,6 +76,7 @@ void printEmployees(std::vector <Employee> emp_list){
                   << "\n";
     }
 }
+// ** Function **
 void printListOfEmployees(std::vector <Employee> emp_list){
     clearScreenANSI();
     std::cout << "* List of Empoyees *" << std::endl;
@@ -103,13 +104,29 @@ void printChooseEmployee(std::string title, std::vector <Employee> emp_list){
     std::cout << "\tEmployee number: "; // for user input
 }
 
+
 // Choose Day:
-void printChooseDay(std::string title){
-    clearScreenANSI();
-    
-    std::cout << "* " << title << " *" << std::endl;
-    std::cout << "\tDate (dd-mm-yyyy): "; // for user input
+void printDays(std::string title, std::vector<Date> days){
+    std::cout << title << ":" << std::endl;
+    for (auto &day : days) {
+        std::cout << "\t< " << day.day << "-" << day.month << "-" << day.year << " >\n"; // for user input
+    }
 }
+// ** Function **
+void printChooseDay(std::string title, std::vector<Date> vac_days, std::vector<Date> abs_days){
+    clearScreenANSI();
+    std::cout << "* " << title << " *" << std::endl;
+
+    if (vac_days.size() != 0) {
+        printDays("Vacation Days", vac_days);
+    }
+    if (abs_days.size() != 0) {
+        printDays("Absence Days", abs_days);
+    }
+    std::cout << "Date (dd-mm-yyyy): "; // for user input
+}
+
+
 
 
 
@@ -238,7 +255,7 @@ void showPressAnyKey(){
 
 void showError(std::string errorTitle, std::string errorMessage)
 {
-    std::cout << "🚨 " << errorTitle << " 🚨" << std::endl;
+    std::cout << "\nX " << errorTitle << " X" << std::endl;
     std::cout << errorMessage << std::endl;
     showPressAnyKey();
 }

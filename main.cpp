@@ -51,7 +51,7 @@ Date get_weed_day(){
         if (new_day.day == 0 || new_day.month == 0 || new_day.year == 0)
         {
             std::cout << "Invalid day. Please enter a number equal or bigger then 1.\n";
-            showPressAnyKey();
+            //showPressAnyKey();
             continue;
         }
         // check weekend
@@ -59,7 +59,7 @@ Date get_weed_day(){
         if (day_week == 0 || day_week == 6)
         {
             std::cout << "Invalid day. Please enter a Week Day.\n";
-            showPressAnyKey();
+            //showPressAnyKey();
             continue;
         }
         break;
@@ -185,7 +185,7 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 emp = &hr.get_employee(imp_id);
 
                 // get number of days to add
-                printEnterValue("Mark Vacation", "Number os Days");
+                printEnterValue("Mark Vacation", "Number of Days");
                 while (true) {
                     if (!(std::cin >> num_days)) {
                         std::cin.clear();
@@ -200,7 +200,7 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 for (int i = 0; i < num_days; i++)
                 {
                     std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
-                    printChooseDay(title);
+                    printChooseDay(title, emp->vacations, emp->absences);
                     
                     hr.add_vacation(*emp, get_weed_day());
                 }
@@ -216,8 +216,9 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 emp = &hr.get_employee(imp_id);
 
                 // get number of days to add
-                printEnterValue("Remove Vacation", "Number os Days");
+                
                 while (true) {
+                    printEnterValue("Remove Vacation", "Number os Days");
                     if (!(std::cin >> num_days)) {
                         std::cin.clear();
                         std::cin.ignore(10000, '\n');
@@ -231,7 +232,8 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 for (int i = 0; i < num_days; i++)
                 {
                     std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
-                    printChooseDay(title);
+                    printChooseDay(title, emp->vacations, emp->absences);
+
                     
                     hr.remove_vacation(*emp, get_weed_day());
                 }
@@ -239,10 +241,66 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 break;
 
 
-            case 5:
+            case 5: // Mark Absence
+                printChooseEmployee("Mark Absence", hr.get_list_employees());
+                
+                // Get employee ID
+                imp_id = get_emp_id();
+                emp = &hr.get_employee(imp_id);
+
+                // get number of days to add
+                printEnterValue("Mark Absence", "Number of Days");
+                while (true) {
+                    if (!(std::cin >> num_days)) {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+                        std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                        continue;
+                    }
+                    if (num_days >= 0) break;
+                    std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                }
+                // get day
+                for (int i = 0; i < num_days; i++)
+                {
+                    std::string title = "Absence Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    printChooseDay(title, emp->vacations, emp->absences);
+                    
+                    hr.add_absence(*emp, get_weed_day());
+                }
+                menu = 0;
                 break;
 
-            case 6:
+            case 6: // Remove Absence
+                printChooseEmployee("Remove Absence", hr.get_list_employees());
+                
+                // Get employee ID
+                imp_id = get_emp_id();
+                emp = &hr.get_employee(imp_id);
+
+                // get number of days to add
+                
+                while (true) {
+                    printEnterValue("Remove Absence", "Number os Days");
+                    if (!(std::cin >> num_days)) {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+                        std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                        continue;
+                    }
+                    if (num_days >= 0) break;
+                    std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                }
+                // get day
+                for (int i = 0; i < num_days; i++)
+                {
+                    std::string title = "Absence Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    printChooseDay(title, emp->vacations, emp->absences);
+
+                    
+                    hr.remove_absence(*emp, get_weed_day());
+                }
+                menu = 0;
                 break;
 
 
@@ -253,9 +311,9 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                 emp = &hr.get_employee(imp_id);
 
                 // get Month & year
-                printEnterValue("Employee's Monthly Calendar", "Month and Year");
                 while (true)
                 {
+                    printEnterValue("Employee's Monthly Calendar", "Month and Year");
                     std::getline(std::cin >> std::ws, new_day_string);
                     std::cin.clear();
 
@@ -271,8 +329,6 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                     break;
                 }
                 {
-                    std:: cout << "main -> before print Cale: " << emp->absences.size() << "\n";
-
                     std::vector<Date> vacations;
                     std::vector<Date> absences;
 
