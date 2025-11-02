@@ -73,11 +73,12 @@ Date get_weed_day(){
 
 int main()
 {
-    std::vector<Date> empty_vacations;
-std::vector<Date> empty_absences;
-printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, 'A');
+    // debug Calendar:
+    //std::vector<Date> empty_vacations;
+    //std::vector<Date> empty_absences;
+    //printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, 'A');
 
-    // FIX: Use the standard C locale name for UTF-8
+    /*/ FIX: Use the standard C locale name for UTF-8 (it did NOT! -.-')
     try {
         std::locale::global(std::locale("C.UTF-8"));
         std::cout.imbue(std::locale("C.UTF-8"));
@@ -95,7 +96,7 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
         // Fallback or warning if C.UTF-8 isn't available
         // It's crucial this part doesn't crash the program.
         std::cerr << "Warning: UTF-8 locale not available. Display may be corrupted." << std::endl;
-    }
+    }*/
 
 
     int menu = 0; // Main menu
@@ -254,7 +255,7 @@ printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, '
                     if (!(std::cin >> num_days)) {
                         std::cin.clear();
                         std::cin.ignore(10000, '\n');
-                        std::cout << "Invalid input. Please enter a number equal or bigger then 0.\n";
+                        std::cout << "Invalid input.1 Please enter a number equal or bigger then 0.\n";
                         continue;
                     }
                     if (num_days >= 0) break;

@@ -5,7 +5,10 @@
 #include <filesystem>
 #include <string>
 
+#include "DEncript.h"
+
 namespace fs = std::filesystem;
+int key = 93;
 
 
 
@@ -122,7 +125,7 @@ bool write_csv(const std::string& filename, const std::vector<Employee>& list_em
         {
             if (!first)
             {
-                vacations += ";";
+                vacations += "+";
                 
             }
             vacations += parse_to_string(day);
@@ -141,7 +144,7 @@ bool write_csv(const std::string& filename, const std::vector<Employee>& list_em
         {
             if (!first)
             {
-                absences += ";";
+                absences += "+";
                 
             }
             absences += parse_to_string(day);
@@ -150,9 +153,8 @@ bool write_csv(const std::string& filename, const std::vector<Employee>& list_em
         
         // Save line to File!
         // TODO: Add Emcription HERE!
-        ofs << emp.name << "," 
-            << vacations << "," 
-            << absences << std::endl;
+        std::string line_buffer = emp.name + ',' + vacations + "," + absences;
+        ofs <<  encriptar(line_buffer, key) << std::endl;
     }
 
     ofs.close();
@@ -183,7 +185,9 @@ std::vector<Employee> read_csv(const std::string& filename) {
 
     // Read the rest of the lines (data)
     while (getline(ifs, line)) {
-        std:: cout << "\t\tread_csV -> Reading line: " << line << "\n";
+        std:: cout << "\t\tread_csV -> Reading RAW line: " << line << "\n";
+        line = desencriptar(line, key);
+        std:: cout << "\t\tread_csV -> Reading Decripted line: " << line << "\n";
 
         std::stringstream ss(line);
         std::string segment;
@@ -203,8 +207,8 @@ std::vector<Employee> read_csv(const std::string& filename) {
             try {
                 // Parse Dates:
                 // splite ;
-                std::vector<std::string> vac_strings = split_string(segments[1], ';');
-                std::vector<std::string> abs_strings = split_string(segments[2], ';');
+                std::vector<std::string> vac_strings = split_string(segments[1], '+');
+                std::vector<std::string> abs_strings = split_string(segments[2], '+');
                 // for date in list -> parse to Date
                 for (const auto& date_string : vac_strings)
                 {

@@ -114,7 +114,7 @@ std::vector<Date> HResources::get_absence_days(Employee &emp, int month, int yea
     std::vector<Date> absence_days;
     //std::cout << "Emp: " << emp.id << " " << emp.name << "\n";
     //std::cout << "Emp Vacation size @ start hr get vacation: " << emp.vacations.size() << "\n";
-    for (int i = 0; i < emp.vacations.size(); i++)
+    for (int i = 0; i < emp.absences.size(); i++)
     {
         //std::cout << "\tDebug @ get vact:" << emp.vacations[i].day << "-" << emp.vacations[i].month << "-" << emp.vacations[i].year;
         if (emp.absences[i].month == month && emp.absences[i].year == year)
