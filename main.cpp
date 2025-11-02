@@ -68,16 +68,27 @@ Date get_weed_day(){
     return new_day;
 }
 
+bool get_yes_no(){
+    std::string key;
+    while (true) {
+        if (!(std::cin >> key)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Invalid input. Please enter a number Y or N" << "\n> ";
+            continue;
+        }
+        if (key == "y" || key == "Y") return true;
+        if (key == "n" || key == "N") return false;
+        std::cout << "Invalid input. Please enter a number Y or N" << "\n> ";
+    }
+    return false; // just in case...
+}
+
 
 
 
 int main()
 {
-    // debug Calendar:
-    //std::vector<Date> empty_vacations;
-    //std::vector<Date> empty_absences;
-    //printCalendarMarked("Test Month", 31, 5, empty_vacations, 'V', empty_absences, 'A');
-
     /*/ FIX: Use the standard C locale name for UTF-8 (it did NOT! -.-')
     try {
         std::locale::global(std::locale("C.UTF-8"));
@@ -173,7 +184,14 @@ int main()
                 std::getline(std::cin >> std::ws, new_emp_name);
                 std::cin.clear();
                 
-                hr.add_employee(new_emp_name);
+                if (hr.checkEmployeeNameExists(new_emp_name))
+                {
+                    showError("Error Adding Employee", "Name Already Exists");
+                }
+                else
+                {
+                    hr.add_employee(new_emp_name);
+                }
                 menu = 0;
                 break;
             
@@ -200,10 +218,32 @@ int main()
                 // get day
                 for (int i = 0; i < num_days; i++)
                 {
-                    std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    std::string title = "Marking Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
                     printChooseDay(title, emp->vacations, emp->absences);
                     
-                    hr.add_vacation(*emp, get_weed_day());
+                    new_day = get_weed_day();
+                    switch (hr.checkDateExists(new_day, *emp))
+                    {
+                    case 0: // Does not Exist -> carry on
+                        hr.add_vacation(*emp, new_day);
+                        break;
+
+                    case 1: // Day is a Vacation Day -> Skip
+                        showError("Error Marking Vacation", "Day already Marked");
+                        break;
+
+                    case 2: // Day is an Absence Day -> change to Vacation??
+                        printEnterValue("Error! Employee was Absens that day", "Replace Absence with Vacation? (Y/N)");
+                        if (get_yes_no())
+                        {
+                            hr.remove_absence(*emp, new_day);
+                            hr.add_vacation(*emp, new_day);
+                        }
+                        break;
+                        
+                    default:
+                        break;
+                    }
                 }
                 menu = 0;
                 break;
@@ -232,11 +272,27 @@ int main()
                 // get day
                 for (int i = 0; i < num_days; i++)
                 {
-                    std::string title = "Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
+                    std::string title = "Removing Vacation Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
                     printChooseDay(title, emp->vacations, emp->absences);
 
-                    
-                    hr.remove_vacation(*emp, get_weed_day());
+                    new_day = get_weed_day();
+                    switch (hr.checkDateExists(new_day, *emp))
+                    {
+                    case 0: // Does not Exist -> skip
+                        showError("Error Removing Vacation", "No Vacation Marked");
+                        break;
+
+                    case 1: // Day is a Vacation Day -> Cary On
+                        hr.remove_vacation(*emp, new_day);
+                        break;
+
+                    case 2: // Day is an Absence Day -> skip
+                        showError("Error Removing Vacation", "No Vacation Marked");
+                        break;
+                        
+                    default:
+                        break;
+                    }
                 }
                 menu = 0;
                 break;
@@ -267,7 +323,31 @@ int main()
                     std::string title = "Absence Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
                     printChooseDay(title, emp->vacations, emp->absences);
                     
-                    hr.add_absence(*emp, get_weed_day());
+                    /*hr.add_absence(*emp, get_weed_day());*/
+                    
+                    new_day = get_weed_day();
+                    switch (hr.checkDateExists(new_day, *emp))
+                    {
+                    case 0: // Does not Exist -> carry on
+                        hr.add_absence(*emp, new_day);
+                        break;
+
+                    case 1: // Day is a Vacation Day -> Change to Absence??
+                        printEnterValue("Error! Employee was on Vacation that day", "Replace Vation with Absence? (Y/N)");
+                        if (get_yes_no())
+                        {
+                            hr.remove_vacation(*emp, new_day);
+                            hr.add_absence(*emp, new_day);
+                        }
+                        break;
+
+                    case 2: // Day is an Absence Day -> Skip
+                        showError("Error Marking Absence", "Day already Marked");
+                        break;
+                        
+                    default:
+                        break;
+                    }
                 }
                 menu = 0;
                 break;
@@ -298,8 +378,24 @@ int main()
                     std::string title = "Absence Day " + std::to_string(i + 1) + "/" + std::to_string(num_days);
                     printChooseDay(title, emp->vacations, emp->absences);
 
-                    
-                    hr.remove_absence(*emp, get_weed_day());
+                    new_day = get_weed_day();
+                    switch (hr.checkDateExists(new_day, *emp))
+                    {
+                    case 0: // Does not Exist -> skip
+                        showError("Error Removing Absence", "No Absence Marked");
+                        break;
+
+                    case 1: // Day is a Vacation Day -> Skip
+                        showError("Error Removing Absence", "No Absence Marked");
+                        break;
+
+                    case 2: // Day is an Absence Day -> Carry On
+                        hr.remove_absence(*emp, new_day);
+                        break;
+                        
+                    default:
+                        break;
+                    }
                 }
                 menu = 0;
                 break;

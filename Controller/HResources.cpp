@@ -11,6 +11,54 @@
 #include "../Model/Dates.h"
 
 
+
+// Helper Funtions
+bool HResources::checkEmployeeExists(Employee& emp)
+{
+    for (auto &&e : list_of_employees)
+    {
+        if (emp.name == e.name)
+        {
+            return true; // He/she does Exist!
+        }
+    }
+    return false; // Nop! With don't have that one!
+}
+
+bool HResources::checkEmployeeNameExists(std::string name)
+{
+    for (auto &&e : list_of_employees)
+    {
+        if (name == e.name)
+        {
+            return true; // He/she does Exist!
+        }
+    }
+    return false; // Nop! With don't have that one!
+}
+
+int HResources::checkDateExists(Date day, Employee &emp)
+{
+    for (auto &&d : emp.vacations)
+    {
+        if (day.day == d.day && day.month == d.month && day.year == d.year)
+        {
+            return 1; // it's a Vacations Day
+        }
+    }
+    for (auto &&d : emp.absences)
+    {
+        if (day.day == d.day && day.month == d.month && day.year == d.year)
+        {
+            return 2; // It's an Absence Day
+        }
+    }
+    return 0; // Nop! With don't have that one!
+}
+
+
+
+
 // Add & List
 std::vector <Employee> HResources::get_list_employees()
 {

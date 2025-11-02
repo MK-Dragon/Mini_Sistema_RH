@@ -14,8 +14,15 @@ struct HResources
     std::vector <Employee> list_of_employees;
     int next_id = 0;
 
-    // Add & List
+    // Helper Functions
+    bool checkEmployeeExists(Employee& emp);
+    bool checkEmployeeNameExists(std::string name);
+    int checkDateExists(Date day, Employee &emp);
+
+    // List Employees
     std::vector <Employee> get_list_employees();
+
+    // Add Employee
     void add_employee(std:: string name);
     void add_loaded_employee(std:: string name, std::vector<Date> vacations, std::vector<Date> absences);
 

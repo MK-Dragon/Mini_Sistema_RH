@@ -68,7 +68,7 @@ void printAddEmployee_phone(){
 
 
 
-// List Employees
+// List Employees - Helper Funtion
 void printEmployees(std::vector <Employee> emp_list){
     for (int i = 0; i < emp_list.size(); i++) {
         std::cout << i << ") Name: " << emp_list[i].name
@@ -76,7 +76,7 @@ void printEmployees(std::vector <Employee> emp_list){
                   << "\n";
     }
 }
-// ** Function **
+// List Employees - ** Function **
 void printListOfEmployees(std::vector <Employee> emp_list){
     clearScreenANSI();
     std::cout << "* List of Empoyees *" << std::endl;
@@ -105,14 +105,14 @@ void printChooseEmployee(std::string title, std::vector <Employee> emp_list){
 }
 
 
-// Choose Day:
+// Choose Day - Helper Function:
 void printDays(std::string title, std::vector<Date> days){
     std::cout << title << ":" << std::endl;
     for (auto &day : days) {
         std::cout << "\t< " << day.day << "-" << day.month << "-" << day.year << " >\n"; // for user input
     }
 }
-// ** Function **
+// hoose Day - ** Function **
 void printChooseDay(std::string title, std::vector<Date> vac_days, std::vector<Date> abs_days){
     clearScreenANSI();
     std::cout << "* " << title << " *" << std::endl;
@@ -128,51 +128,11 @@ void printChooseDay(std::string title, std::vector<Date> vac_days, std::vector<D
 
 
 
-
-
-
-// Draw Calender
-
-/*std::optional<char> get_day_marker(
-    const std::vector<Date>& vacations, 
-    const std::vector<Date>& absences, 
-    int day_to_check
-) {
-    // Check for Vacation first
-    if (std::find_if(vacations.begin(), vacations.end(), 
-        [day_to_check](const Date& d) {
-            return d.day == day_to_check;
-        }) != vacations.end()) 
-    {
-        return 'V'; // Using 'V' as a default marker for Vacation
-    }
-    
-    // Check for Absence second
-    if (std::find_if(absences.begin(), absences.end(), 
-        [day_to_check](const Date& d) {
-            return d.day == day_to_check;
-        }) != absences.end()) 
-    {
-        return 'A'; // Using 'A' as a default marker for Absence
-    }
-    
-    // Day is not marked in either list
-    return std::nullopt;
-}*/
-
-
-
-
-
-
-
-
-// --- Main Calendar Function (Modified) ---
+// --- Main Calendar Function ---   *** IT WORKS!!! DO NOT TOUCH!!! ***
 void printCalendarMarked(
     const std::string& month_name, 
     int days_in_month, 
     int start_day_of_week, // 0 = Domingo, 6 = Sábado
-    
     // NEW PARAMETERS for two sets of dates and their markers
     const std::vector<Date>& vacations, 
     char vacation_marker,
