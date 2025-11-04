@@ -14,6 +14,11 @@
 #include <algorithm> // Required for std::find_if
 #include <optional> // Requires C++17, but is the cleanest way to return a marker
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_YELLOW "\x1b[33m"
+
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 #include <cstdlib>
 void clearScreenANSI() {
     // \033[2J clears the screen, \033[1;1H moves the cursor to the top-left (row 1, column 1)
@@ -29,6 +34,7 @@ void printMainMenu(){
 
     // Header
     std::cout << "* Main Menu *" << std::endl;
+    std::cout << "* --------- *"<< std::endl;
 
     // Options
     std::cout << "(1) List Employees " << std::endl;
@@ -53,6 +59,8 @@ void printMainMenu(){
 void printAddEmployee_name(){
     clearScreenANSI();
     std::cout << "* Add Employee *" << std::endl;
+    std::cout << "* ------------ *"<< std::endl;
+
     std::cout << "Name: "; // for user input
 }
 /*void printAddEmployee_birthday(){
@@ -80,6 +88,8 @@ void printEmployees(std::vector <Employee> emp_list){
 void printListOfEmployees(std::vector <Employee> emp_list){
     clearScreenANSI();
     std::cout << "* List of Empoyees *" << std::endl;
+    std::cout << "* ---------------- *"<< std::endl;
+
     printEmployees(emp_list);    
 }
 
@@ -89,7 +99,15 @@ void printListOfEmployees(std::vector <Employee> emp_list){
 void printEnterValue(std::string title, std::string ask){
     clearScreenANSI();
 
-    std::cout << "* " << title << " *" << std::endl;
+    std::cout << "* " << ANSI_COLOR_YELLOW << title << ANSI_COLOR_RESET << " *" << std::endl;
+    
+    std::cout << "* ";
+    for (int i = 0; i < title.size(); i++)
+    {
+            std::cout << "-";
+    }
+    std::cout << " *"<< std::endl;
+    
     std::cout << "\t" << ask << ": "; // for user input
 }
 
@@ -112,10 +130,17 @@ void printDays(std::string title, std::vector<Date> days){
         std::cout << "\t< " << day.day << "-" << day.month << "-" << day.year << " >\n"; // for user input
     }
 }
-// hoose Day - ** Function **
+// Choose Day - ** Function **
 void printChooseDay(std::string title, std::vector<Date> vac_days, std::vector<Date> abs_days){
     clearScreenANSI();
     std::cout << "* " << title << " *" << std::endl;
+
+    std::cout << "* ";
+    for (int i = 0; i < title.size(); i++)
+    {
+            std::cout << "-";
+    }
+    std::cout << " *"<< std::endl;
 
     if (vac_days.size() != 0) {
         printDays("Vacation Days", vac_days);
@@ -215,7 +240,7 @@ void showPressAnyKey(){
 
 void showError(std::string errorTitle, std::string errorMessage)
 {
-    std::cout << "\nX " << errorTitle << " X" << std::endl;
+    std::cout << ANSI_COLOR_RED << "\nX " << errorTitle << " X" << ANSI_COLOR_RESET << std::endl;
     std::cout << errorMessage << std::endl;
     showPressAnyKey();
 }

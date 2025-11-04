@@ -410,7 +410,7 @@ int main()
                 // get Month & year
                 while (true)
                 {
-                    printEnterValue("Employee's Monthly Calendar", "Month and Year");
+                    printEnterValue("Employee's Monthly Calendar", "Month and Year (mm-yyyy)");
                     std::getline(std::cin >> std::ws, new_day_string);
                     std::cin.clear();
 
